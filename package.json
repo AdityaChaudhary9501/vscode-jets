@@ -1,0 +1,111 @@
+{
+  "name": "vscode-jets",
+  "displayName": "Jets",
+  "description": "A squadron of fighter jets (F-16, F-22, F/A-18, Su-57, Su-30, Su-25) flies around your Explorer sidebar.",
+  "version": "0.1.0",
+  "publisher": "AdityaChaudhary9501",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "keywords": [
+    "pets",
+    "fun",
+    "jets",
+    "fighter jet",
+    "toy",
+    "fidget"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "jets.view",
+          "name": "Jets",
+          "retainContextWhenHidden": true
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "jets.addJet",
+        "title": "Add Jet",
+        "category": "Jets",
+        "icon": "$(add)"
+      },
+      {
+        "command": "jets.removeJet",
+        "title": "Remove Jet",
+        "category": "Jets",
+        "icon": "$(dash)"
+      },
+      {
+        "command": "jets.reset",
+        "title": "Reset Jets",
+        "category": "Jets",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "jets.boost",
+        "title": "Trigger Afterburner",
+        "category": "Jets",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "jets.toggleSky",
+        "title": "Toggle Day/Night",
+        "category": "Jets",
+        "icon": "$(color-mode)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "jets.addJet",
+          "when": "view == jets.view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "jets.removeJet",
+          "when": "view == jets.view",
+          "group": "navigation@2"
+        },
+        {
+          "command": "jets.boost",
+          "when": "view == jets.view",
+          "group": "navigation@3"
+        },
+        {
+          "command": "jets.toggleSky",
+          "when": "view == jets.view",
+          "group": "navigation@4"
+        },
+        {
+          "command": "jets.reset",
+          "when": "view == jets.view",
+          "group": "navigation@5"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "^5.4.0"
+  }
+}
