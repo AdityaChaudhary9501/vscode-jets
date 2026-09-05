@@ -2,6 +2,9 @@
 
 A squadron of fighter jets buzzes around your Explorer sidebar — [vscode-pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets), but fighter jets instead of pets.
 
+![Squadron flying during the day](media/readme_daytime_image.png)
+![Jets holding a V formation](media/readme_formation_image.png)
+
 ## Features
 
 - Eleven real aircraft to fly: **F-16 Fighting Falcon**, **F-22 Raptor**, **F/A-18 Hornet**, **Su-57 Felon**, **Su-30 Flanker-C**, **Su-25 Frogfoot**, **Eurofighter Typhoon**, **SEPECAT Jaguar**, **MiG-21 Fishbed**, **MiG-29 Fulcrum**, and **Mirage 2000**.
