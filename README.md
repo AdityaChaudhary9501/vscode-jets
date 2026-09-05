@@ -23,21 +23,6 @@ Open the **Explorer** sidebar (`Cmd/Ctrl+Shift+E`) — the "Jets" section sits b
 | 🌗 | Toggle day/night sky |
 | ↻ | Reset to a single jet |
 
-## Development
-
-```bash
-npm install
-npm run compile   # or: npm run watch
-```
-
-Press `F5` in VS Code to launch an Extension Development Host with the extension loaded.
-
-To package a `.vsix` locally:
-
-```bash
-npm run package
-```
-
 ## License
 
 MIT
