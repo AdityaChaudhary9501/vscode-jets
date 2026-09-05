@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Expanded Marketplace search keywords for better discoverability.
+
 ## 0.2.1
 
 - Added screenshots to the README.

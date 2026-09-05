@@ -2,7 +2,7 @@
   "name": "vscode-jets",
   "displayName": "Jets",
   "description": "A squadron of fighter jets flies around your Explorer sidebar — 11 aircraft to choose from, with optional formation flying.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "AdityaChaudhary9501",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -12,11 +12,21 @@
   },
   "keywords": [
     "pets",
+    "desktop pet",
     "fun",
     "jets",
     "fighter jet",
+    "warplane",
     "toy",
-    "fidget"
+    "fidget",
+    "aviation",
+    "airplane",
+    "aircraft",
+    "military",
+    "flight",
+    "squadron",
+    "sidebar",
+    "formation flying"
   ],
   "engines": {
     "vscode": "^1.85.0"
