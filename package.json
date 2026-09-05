@@ -2,7 +2,7 @@
   "name": "vscode-jets",
   "displayName": "Jets",
   "description": "A squadron of fighter jets (F-16, F-22, F/A-18, Su-57, Su-30, Su-25) flies around your Explorer sidebar.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "AdityaChaudhary9501",
   "license": "MIT",
   "icon": "media/icon.png",
