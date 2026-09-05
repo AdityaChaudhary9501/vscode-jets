@@ -8,16 +8,71 @@
 
   const prevState = vscode.getState() || {};
 
-  const AIRCRAFT_TYPES = ['f16', 'f22', 'f18', 'su57', 'su30', 'su25'];
+  const AIRCRAFT_TYPES = ['f16', 'f22', 'f18', 'su57', 'su30', 'su25', 'eurofighter', 'jaguar', 'mig21', 'mig29', 'mirage2000'];
 
   let selectedAircraft = AIRCRAFT_TYPES.includes(prevState.selectedAircraft) ? prevState.selectedAircraft : 'f16';
   let isDark = typeof prevState.isDark === 'boolean' ? prevState.isDark : true;
 
   const MAX_JETS = 6;
 
+  // formation offsets are authored assuming the leader flies with dir === 1 (facing +x);
+  // dx is mirrored by the leader's actual dir so "behind" stays behind regardless of heading
+  const FORMATIONS = {
+    v: (i) => {
+      const side = i % 2 === 1 ? 1 : -1;
+      const rank = Math.ceil(i / 2);
+      return { dx: -rank * 34, dy: side * rank * 22 };
+    },
+    line: (i) => {
+      const side = i % 2 === 1 ? 1 : -1;
+      const rank = Math.ceil(i / 2);
+      return { dx: 0, dy: side * rank * 40 };
+    },
+    echelon: (i) => ({ dx: -i * 30, dy: i * 26 }),
+    diamond: (i) => {
+      const slots = [
+        { dx: -30, dy: -26 },
+        { dx: -30, dy: 26 },
+        { dx: -58, dy: 0 }
+      ];
+      if (i - 1 < slots.length) return slots[i - 1];
+      return { dx: -58 - (i - 3) * 32, dy: 0 };
+    },
+    trail: (i) => ({ dx: -i * 34, dy: 0 })
+  };
+
+  let formationMode = Object.prototype.hasOwnProperty.call(FORMATIONS, prevState.formation) ? prevState.formation : 'none';
+
+  function applyFormation(mode) {
+    formationMode = Object.prototype.hasOwnProperty.call(FORMATIONS, mode) ? mode : 'none';
+    jets.forEach((j, idx) => {
+      if (formationMode !== 'none' && idx > 0) {
+        if (j.state !== 'formation') {
+          j.state = 'formation';
+          j.stateTime = 0;
+        }
+      } else if (j.state === 'formation') {
+        j.state = 'cruise';
+        j.stateTime = 0;
+      }
+    });
+  }
+
   // pixel-art sprites: drawn nose-up in the source image, rotated +90deg at
   // render time to align with the nose-right convention used everywhere else
-  const SPRITE_LENGTH = { f16: 78, f22: 92, f18: 85, su57: 94, su30: 96, su25: 80 };
+  const SPRITE_LENGTH = {
+    f16: 78,
+    f22: 92,
+    f18: 85,
+    su57: 94,
+    su30: 96,
+    su25: 80,
+    eurofighter: 88,
+    jaguar: 80,
+    mig21: 74,
+    mig29: 90,
+    mirage2000: 76
+  };
   const SPRITES = {};
   const spriteUris = /** @type {any} */ (window).__SPRITES__ || {};
   for (const type of Object.keys(spriteUris)) {
@@ -60,6 +115,8 @@
         baseSpeed: randRange(1.2, 1.6),
         speed: 1.4,
         dir: Math.random() < 0.5 ? -1 : 1,
+        dirY: Math.random() < 0.5 ? -1 : 1,
+        vSpeed: randRange(0.25, 0.5),
         angle: 0,
         bank: 0,
         state: 'cruise',
@@ -86,12 +143,14 @@
   } else {
     jets = [createJet({ x: 60, y: height ? height / 2 : 60 })];
   }
+  applyFormation(formationMode);
 
   window.addEventListener('message', (event) => {
     const msg = event.data;
     switch (msg.type) {
       case 'reset':
         jets = [createJet({ x: 60, y: height / 2 })];
+        applyFormation('none');
         saveState();
         break;
       case 'addJet':
@@ -99,17 +158,23 @@
           const aircraft = AIRCRAFT_TYPES.includes(msg.aircraft) ? msg.aircraft : selectedAircraft;
           selectedAircraft = aircraft;
           jets.push(createJet({ aircraft }));
+          applyFormation(formationMode);
           saveState();
         }
         break;
       case 'removeJet':
         if (jets.length > 0) {
           jets.pop();
+          applyFormation(formationMode);
           saveState();
         }
         break;
       case 'boost':
         jets.forEach(triggerBoost);
+        break;
+      case 'formation':
+        applyFormation(msg.value);
+        saveState();
         break;
       case 'theme':
         // ColorThemeKind: 1 = Light, 2 = Dark, 3 = HighContrast, 4 = HighContrastLight
@@ -168,7 +233,8 @@
     vscode.setState({
       jets: jets.map((j) => ({ x: j.x, y: j.y, dir: j.dir, aircraft: j.aircraft })),
       selectedAircraft,
-      isDark
+      isDark,
+      formation: formationMode
     });
   }
 
@@ -260,7 +326,21 @@
     su25: [
       { x: nozzleX('su25'), y: -5, spread: 3.5 },
       { x: nozzleX('su25'), y: 5, spread: 3.5 }
-    ]
+    ],
+    eurofighter: [
+      { x: nozzleX('eurofighter'), y: -4, spread: 2.8 },
+      { x: nozzleX('eurofighter'), y: 4, spread: 2.8 }
+    ],
+    jaguar: [
+      { x: nozzleX('jaguar'), y: -3.5, spread: 2.6 },
+      { x: nozzleX('jaguar'), y: 3.5, spread: 2.6 }
+    ],
+    mig21: [{ x: nozzleX('mig21'), y: 0, spread: 4.2 }],
+    mig29: [
+      { x: nozzleX('mig29'), y: -8, spread: 3.2 },
+      { x: nozzleX('mig29'), y: 8, spread: 3.2 }
+    ],
+    mirage2000: [{ x: nozzleX('mirage2000'), y: 0, spread: 4 }]
   };
 
   function drawFlameAt(x, y, spread, boosting) {
@@ -317,12 +397,19 @@
   // ---- Update loop ----
   let lastTime = performance.now();
 
-  function update(j, dt, now) {
+  function update(j, dt, now, idx) {
     const boosting = now < j.boostUntil;
     j.speed = boosting ? j.baseSpeed * 2.6 : j.baseSpeed;
 
     const margin = 65;
-    const bobSpeed = 0.0016;
+    const vMargin = 42;
+
+    if (j.state === 'formation') {
+      updateFormationSlave(j, idx);
+      j.trail.push({ x: j.x - j.dir * 30, y: j.y, boost: boosting });
+      if (j.trail.length > 26) j.trail.shift();
+      return;
+    }
 
     switch (j.state) {
       case 'cruise':
@@ -370,13 +457,42 @@
       }
     }
 
-    // gentle altitude drift, clamped to canvas
-    j.y += Math.sin(now * bobSpeed + j.x * 0.01 + j.id) * 0.15;
-    j.y = Math.max(42, Math.min(height - 42, j.y));
+    // straight-line vertical travel; bounces direction at the top/bottom margins
+    j.y += j.dirY * j.vSpeed * dt * 0.03;
+    if (j.y <= vMargin) {
+      j.y = vMargin;
+      j.dirY = 1;
+    } else if (j.y >= height - vMargin) {
+      j.y = height - vMargin;
+      j.dirY = -1;
+    }
     j.x = Math.max(30, Math.min(width - 30, j.x));
 
     j.trail.push({ x: j.x - j.dir * 30, y: j.y, boost: boosting });
     if (j.trail.length > 26) j.trail.shift();
+  }
+
+  function updateFormationSlave(j, idx) {
+    const leader = jets[0];
+    if (!leader || idx === 0) {
+      j.state = 'cruise';
+      j.stateTime = 0;
+      return;
+    }
+    const getOffset = FORMATIONS[formationMode];
+    const offset = getOffset ? getOffset(idx) : { dx: 0, dy: 0 };
+    const targetX = leader.x + offset.dx * leader.dir;
+    const targetY = leader.y + offset.dy;
+
+    j.x += (targetX - j.x) * 0.1;
+    j.y += (targetY - j.y) * 0.1;
+    j.dir = leader.dir;
+    j.dirY = leader.dirY;
+    j.bank = leader.bank;
+    j.angle = 0;
+
+    j.x = Math.max(30, Math.min(width - 30, j.x));
+    j.y = Math.max(42, Math.min(height - 42, j.y));
   }
 
   function frame(now) {
@@ -389,10 +505,10 @@
       ctx.fillRect(0, 0, width, height);
       drawClouds(dt * 0.05);
 
-      for (const j of jets) {
-        update(j, dt, now);
+      jets.forEach((j, idx) => {
+        update(j, dt, now, idx);
         drawContrail(j);
-      }
+      });
       for (const j of jets) {
         drawJet(j, now < j.boostUntil);
       }

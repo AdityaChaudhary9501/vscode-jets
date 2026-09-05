@@ -1,8 +1,8 @@
 {
   "name": "vscode-jets",
   "displayName": "Jets",
-  "description": "A squadron of fighter jets (F-16, F-22, F/A-18, Su-57, Su-30, Su-25) flies around your Explorer sidebar.",
-  "version": "0.1.1",
+  "description": "A squadron of fighter jets flies around your Explorer sidebar — 11 aircraft to choose from, with optional formation flying.",
+  "version": "0.2.0",
   "publisher": "AdityaChaudhary9501",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -67,6 +67,12 @@
         "title": "Toggle Day/Night",
         "category": "Jets",
         "icon": "$(color-mode)"
+      },
+      {
+        "command": "jets.formation",
+        "title": "Set Formation",
+        "category": "Jets",
+        "icon": "$(layers)"
       }
     ],
     "menus": {
@@ -92,9 +98,14 @@
           "group": "navigation@4"
         },
         {
-          "command": "jets.reset",
+          "command": "jets.formation",
           "when": "view == jets.view",
           "group": "navigation@5"
+        },
+        {
+          "command": "jets.reset",
+          "when": "view == jets.view",
+          "group": "navigation@6"
         }
       ]
     }

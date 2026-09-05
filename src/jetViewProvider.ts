@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export const AIRCRAFT_TYPES = ['f16', 'f22', 'f18', 'su57', 'su30', 'su25'] as const;
+export const AIRCRAFT_TYPES = ['f16', 'f22', 'f18', 'su57', 'su30', 'su25', 'eurofighter', 'jaguar', 'mig21', 'mig29', 'mirage2000'] as const;
 
 export class JetViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'jets.view';
