@@ -2,7 +2,7 @@
   "name": "vscode-jets",
   "displayName": "Jets",
   "description": "A squadron of fighter jets flies around your Explorer sidebar — 11 aircraft to choose from, with optional formation flying.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "AdityaChaudhary9501",
   "license": "MIT",
   "icon": "media/icon.png",

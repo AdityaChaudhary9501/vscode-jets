@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Added screenshots to the README.
+
 ## 0.2.0
 
 - Added five new aircraft: Eurofighter Typhoon, SEPECAT Jaguar, MiG-21, MiG-29, and Mirage 2000.
